@@ -1,0 +1,34 @@
+[
+  {
+    "language": "cpp",
+    "skill": "google-cpp-style",
+    "valid_fixture": "cpp_good.cc",
+    "invalid_fixture": "cpp_bad.cc",
+    "signals": ["include order", "using-directive", "ownership", "explicit"],
+    "non_style_boundary": "Do not classify a compiler error or ABI change as only formatting."
+  },
+  {
+    "language": "rust",
+    "skill": "google-rust-style",
+    "valid_fixture": "rust_good.rs",
+    "invalid_fixture": "rust_bad.rs",
+    "signals": ["glob imports", "flexible references", "Option/Result", "documentation"],
+    "non_style_boundary": "Do not apply [chrome] or [Fuchsia] rules without the matching codebase."
+  },
+  {
+    "language": "python",
+    "skill": "google-python-style",
+    "valid_fixture": "python_good.py",
+    "invalid_fixture": "python_bad.py",
+    "signals": ["imports", "mutable defaults", "four spaces", "broad exceptions"],
+    "non_style_boundary": "Do not claim Pylint, type checking, or tests ran unless the command ran."
+  },
+  {
+    "language": "typescript",
+    "skill": "google-typescript-style",
+    "valid_fixture": "typescript_good.ts",
+    "invalid_fixture": "typescript_bad.ts",
+    "signals": ["named exports", "type-only imports", "private fields", "Array constructor"],
+    "non_style_boundary": "Do not rewrite generated code or report a subjective optional format as a violation."
+  }
+]
