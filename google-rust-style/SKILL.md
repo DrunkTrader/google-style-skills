@@ -1,6 +1,6 @@
 ---
 name: google-rust-style
-description: Applies the current Google Rust Style Guide to Rust code generation, review, refactoring, and bug fixes. Use when a Rust task needs Google guidance on modules, imports, ownership, APIs, traits, concurrency, naming, documentation, or implementation choices; do not apply it to other languages or override explicit project conventions.
+description: Applies the current Google Rust Style Guide to Rust code generation, review, refactoring, and bug fixes. Use for any Rust task, and especially when choosing between `&[T]` and `&Vec<T>`, unique ownership and `Rc`/`Arc`, a newtype and a type alias, a trait and an inherent impl, an enum and a `bool` parameter, `Option`/`Result`/`panic!`, or `unwrap` and `expect`; when naming a constructor, getter, or extension trait; when deciding on `#[non_exhaustive]`, `#[must_use]`, module and import layout, or doc comments; or when justifying `unsafe`. Also use when asked to follow Google style and when reviewing a Rust PR. Do not apply it to other languages or override explicit project conventions.
 license: Mixed licensing; adapted guidance is CC BY 3.0 and code examples are Apache-2.0. See references/source-and-license.md.
 metadata:
   source: google/styleguide
@@ -22,6 +22,36 @@ Use this skill only for Rust code and Rust-facing APIs. The upstream guide inclu
 6. Separate style findings from ownership/correctness, unsafe-code, concurrency, security, and performance findings.
 7. Run the repository's configured formatter, Clippy/static analysis, build, and tests when available. Report commands and outcomes exactly; do not claim unrun checks.
 8. Summarize changed files, applicable sections, checks, exceptions, and unresolved issues.
+
+## Quick reference
+
+Decide the common cases from this table without opening a reference file. Open the mapped reference when you need the rationale, the exceptions, or the codebase marker — every row below is the default, not the whole rule.
+
+| Decision | Default |
+| --- | --- |
+| Parameter borrowing immutable data | `&[T]`, `&str`, `&T`, `Option<&T>` — not `&Vec<T>`, `&String`, `&Box<T>`, `&Option<T>` |
+| Shared ownership | Unique ownership; `Rc`/`Arc` only when the alternative is unreasonably complex |
+| `.clone()` to settle a borrow error | Borrow instead; clone only when a real independent value is needed |
+| `bool` parameter | A named enum, unless the meaning is obvious at the call site |
+| Reporting failure | `Option` simple absence · `Result` caller must distinguish causes · `panic!` bug or violated invariant |
+| A panic is genuinely correct | `expect` with a message saying why, not `unwrap` |
+| `is_some()` then `unwrap()` | Pattern match: `if let Some(v) = ...` |
+| Same primitive, different meaning | Newtype, not a type alias |
+| Tuple vs. named fields | Named fields, except a single-field newtype or a very local context |
+| Trait with one implementor | An inherent `impl` |
+| Extension trait | `Ext` suffix, owned by the team that owns the extended type |
+| Constructor | `new()`, `new_with_foo()` when several, `try_new()` when fallible |
+| Value conversion | `from_foo()` plus the matching `From` impl |
+| Accessors | `foo()`, `foo_mut()`, `set_foo()`, `replace_foo()`, `take_foo()`, `with_foo(\|f\| ...)` |
+| You wrote `len()` | Also write `is_empty()` |
+| Public enum or public-field struct other teams use | `#[non_exhaustive]` |
+| Ignoring the return value is a bug | `#[must_use]` on the function, or on the returned type |
+| Reaching for `unsafe` | Last resort, wrapped in a safe abstraction, with a `SAFETY:` comment giving the argument |
+| Concatenating more than two strings | `format!` / `write!` |
+| Needing code generation | Function or type → `macro_rules!` → other codegen → `proc_macro` |
+| Naming | No abbreviations outsiders would not know; descriptive lifetimes; short, bound-derived generic parameters |
+| Imports | One module per `use`, no globs, traits imported locally, `module::function()`, type names unqualified |
+| Public item | `///` on the item, `//!` at the top of the file for the module or crate; document panics and `unsafe` invariants |
 
 ## Reference map
 
